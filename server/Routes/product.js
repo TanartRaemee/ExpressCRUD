@@ -3,16 +3,19 @@ const router = express.Router();
 
 const { read,list,create,update,remove } = require('../controllers/product')
 
+//Middleware
+const { auth } = require('../Middleware/auth')
+
 //http://localhost:5000/api/product
 router.get('/product', list);
 
-router.get('/product/:id', read);
+router.get('/product/:id',auth, read);
 
-router.post('/product', create);
+router.post('/product',auth, create);
 
-router.put('/product/:id', update);
+router.put('/product/:id',auth, update);
 
-router.delete('/product/:id', remove);
+router.delete('/product/:id',auth, remove);
 
 module.exports = router
 
