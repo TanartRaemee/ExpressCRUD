@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
         },
       };
       // 3. Generate token
-      jwt.sign(payload, "jwtsecret", { expiresIn: 3000 },(err, token) => {
+      jwt.sign(payload, "jwtsecret", { expiresIn: '1d' },(err, token) => {
         if (err) throw err;
         res.json({token, payload})
       });

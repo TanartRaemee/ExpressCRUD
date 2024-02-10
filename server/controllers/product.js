@@ -1,4 +1,6 @@
 const product = require("../Models/product");
+const fs = require("fs");
+
 
 exports.read = async (req, res, next) => {
   try {
@@ -23,8 +25,12 @@ exports.list = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    console.log(req.body);
-    const productCreate = await product(req.body).save();
+    let data = req.body;
+    if (req.file) {
+      data.file = req.file.filename;
+    }
+    // console.log(data);
+    const productCreate = await product(data).save();
     res.send(productCreate);
   } catch (err) {
     console.log(err);
@@ -34,10 +40,10 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const id = req.params.id
+    const id = req.params.id;
     const productUpdate = await product
-      .findOneAndUpdate({ _id: id }, req.body, {new: true})
-      .exec()
+      .findOneAndUpdate({ _id: id }, req.body, { new: true })
+      .exec();
     res.send(productUpdate);
   } catch (err) {
     console.log(err);
@@ -45,10 +51,42 @@ exports.update = async (req, res, next) => {
   }
 };
 
+// exports.remove = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     const productRemove = await product.findOneAndDelete({ _id: id }).exec();
+//     if (productRemove?.file) {
+//       await fs.unlink("./uploads" + productRemove.file, (err) => {
+//         if (err) {
+//           console.log(err);
+//         } else {
+//           console.log("Removed successfully");
+//         }
+//       });
+//     }
+
+//     res.send(productRemove);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send("Server Error");
+//   }
+// };
+
 exports.remove = async (req, res, next) => {
   try {
-    const id = req.params.id
-    const productRemove = await product.findOneAndDelete({_id: id}).exec()
+    const id = req.params.id;
+    const productRemove = await product.findOneAndDelete({ _id: id }).exec();
+    if (productRemove?.file) {
+      const filePath = "./uploads/" + productRemove.file;
+      await fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Removed successfully");
+        }
+      });
+    }
+
     res.send(productRemove);
   } catch (err) {
     console.log(err);
