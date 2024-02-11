@@ -8,7 +8,10 @@ const productSchema = mongoose.Schema({
     price:{
         type:Number
     },
-    file:String
+    file:{
+        type:String,
+        default: 'No image.jpg'
+    }
 },{ timestamps: true })
 
 module.exports = mongoose.model('Product', productSchema);

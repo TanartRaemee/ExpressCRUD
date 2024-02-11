@@ -1,7 +1,6 @@
 const product = require("../Models/product");
 const fs = require("fs");
 
-
 exports.read = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -41,8 +40,22 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const id = req.params.id;
+    let newDataProduct = req.body;
+
+    if (typeof req.file !== "undefined") {
+      newDataProduct.file = req.file.filename
+      const filePath = "./uploads/" + newDataProduct.fileold;
+      await fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Edit successfully");
+        }
+      });
+
+    }
     const productUpdate = await product
-      .findOneAndUpdate({ _id: id }, req.body, { new: true })
+      .findOneAndUpdate({ _id: id }, newDataProduct, { new: true })
       .exec();
     res.send(productUpdate);
   } catch (err) {
