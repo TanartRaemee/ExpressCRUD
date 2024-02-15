@@ -15,6 +15,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // func
 import { login } from "../../../functions/auth";
+import { useNavigate } from "react-router-dom";
+
+import { useDispatch } from "react-redux";
+import { login as loginRedux } from "../../../store/userSlice"
 
 function Copyright(props) {
   return (
@@ -39,6 +43,9 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
+  const navi = useNavigate();
+  const dispatch = useDispatch();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -51,8 +58,23 @@ export default function Login() {
       .then((res) => {
         console.log(res);
         alert(res.data);
+        dispatch(loginRedux({
+          username : res.data.payload.userCheck.username,
+          role : res.data.payload.userCheck.role,
+          token : res.data.token
+        }))
+        localStorage.setItem('token',res.data.token)
+        roleRedirects(res.data.payload.userCheck.role);
       })
       .catch((err) => console.log(err));
+  };
+
+  const roleRedirects = (role) => {
+    if (role === "admin") {
+      navi("/admin/index");
+    } else {
+      navi("/user/index");
+    }
   };
 
   return (

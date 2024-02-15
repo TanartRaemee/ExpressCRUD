@@ -12,30 +12,77 @@ import SideBar from "./layout/SideBar";
 import Register from "./components/pages/auth/Register";
 import Login from "./components/pages/auth/Login";
 
+//admin
+import HomepageAdmin from "./components/pages/admin/HomepageAdmin";
+
+// user
+import HomepageUser from "./components/pages/user/HomepageUser";
+import AdminRoute from "./routes/AdminRoute";
+import UserRoute from "./routes/UserRoute";
+import { currentUser } from "./functions/auth";
+import { useDispatch } from "react-redux"
+import { login as loginRedux } from "./store/userSlice"
+
 function App() {
+
+  const dispatch = useDispatch()
+
+  const idToken = localStorage.getItem('token')
+  console.log('Mytoken',idToken)
+  currentUser(idToken).then(res => {
+    console.log(res)
+    dispatch(loginRedux({
+      username: res.data.username,
+      role: res.data.role,
+      token: idToken,
+    }))
+  }).catch(err => console.log(err))
+
+
   return (
     <BrowserRouter>
       <>
         <CssBaseline />
+        {/* // Public routes */}
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          {/* //User routes */}
+          <Route
+            path="/user/index"
+            element={
+              <UserRoute>
+                <HomepageUser />
+              </UserRoute>
+            }
+          />
+
+          {/* // Admin routes */}
+          <Route
+            path="/admin/index"
+            element={
+              <AdminRoute>
+                <HomepageAdmin />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/viewtable"
+            element={
+              <AdminRoute>
+                <FromProduct />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/edit/:id"
+            element={
+              <AdminRoute>
+                <FromEditProduct />
+              </AdminRoute>
+            }
+          />
         </Routes>
-        <div className="app">
-          <SideBar />
-          <main className="content">
-            <HeaderBar />
-            <div className="content_body">
-              <Box m="20px">
-                <Routes>
-                  <Route path="/admin/viewtable" element={<FromProduct />} />
-                  <Route path="/edit/:id" element={<FromEditProduct />} />
-                  
-                </Routes>
-              </Box>
-            </div>
-          </main>
-        </div>
       </>
     </BrowserRouter>
   );

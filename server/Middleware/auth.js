@@ -6,8 +6,8 @@ exports.auth = async (req, res, next) => {
     if (!token) {
       return res.status(401).send("No token provided");
     }
-    const decoded = jwt.verify(token, "jwtsecret")
-    req.user = decoded.user
+    const decoded = jwt.verify(token, 'jwtsecret')
+    req.userCheck = decoded.userCheck
     
     next();
   } catch (err) {

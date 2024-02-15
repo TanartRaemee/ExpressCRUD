@@ -2,17 +2,19 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   value: "Air Master",
+  user: []
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login: (state) => {
-      state.value = "Air Master Login";
+    login: (state,action) => {
+      state.value = "user Login";
+      state.user = action.payload
     },
     logout: (state) => {
-      state.value = "Air Master Logout";
+      state.value = "user Logout";
     },
     incrementByAmount: (state, action) => {
       state.value += action.payload;
