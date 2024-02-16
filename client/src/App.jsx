@@ -22,6 +22,7 @@ import UserRoute from "./routes/UserRoute";
 import { currentUser } from "./functions/auth";
 import { useDispatch } from "react-redux"
 import { login as loginRedux } from "./store/userSlice"
+import Notfound404 from "./components/pages/Notfound404";
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
         <CssBaseline />
         {/* // Public routes */}
         <Routes>
+          <Route path="*" element={<Notfound404 text="The page you’re looking for doesn’t exist."/>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           {/* //User routes */}
